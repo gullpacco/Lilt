@@ -21,7 +21,9 @@ public class Research : MonoBehaviour {
     public string cureName;
     public Text gainText, timeText, levelText, upgradeText;
     public GameObject lockedText;
-    int bonusLimit = 25, level;
+    public UpgradeButton upgrade_button;
+    int bonusLimit = 25, level, purchased_upgrades;
+    public int purchased_upgrade_cost;
     bool managed, loading;
     Image img;
     GameController gc;
@@ -56,7 +58,7 @@ public class Research : MonoBehaviour {
     }
     // Use this for initialization
     void Start () {
-
+        name= name.Split('_')[0];
         if (unlocked)
         {
             levelText.text = "" + level;
@@ -89,6 +91,13 @@ public class Research : MonoBehaviour {
         }
         else timeLeft = 0;
 
+        if (PlayerPrefs.HasKey("Purchased_Upgrades"))
+        {
+            for(int i=0; i<PlayerPrefs.GetInt("Purchased_Upgrades"); i++)
+            {
+                InstantPurchaseUpgrade();
+            }
+        }
       
         gainText.text = "Gain: " + currentCure.ToString("F2");
        
@@ -103,6 +112,9 @@ public class Research : MonoBehaviour {
         InvokeRepeating("RecalculateTime", 0, 1);
         if (timeLeft == 0)
             timeLeft = cureTime;
+        upgrade_button.SetName(name + " Research x 3");
+        upgrade_button.SetCost(purchased_upgrade_cost);
+
 
     }
 
@@ -125,8 +137,18 @@ public class Research : MonoBehaviour {
 
         }
         // RecalculateTime();
+        CheckUpgrades();
     }
 
+
+    void CheckUpgrades()
+    {
+        if (gc.GetCure() > purchased_upgrade_cost)
+        {
+            upgrade_button.ChangeColour(new Color(0.3f, 0.3f, 0.6f));
+        }
+        else upgrade_button.ChangeColour(new Color(0.3f, 0.3f, 0.3f));
+    }
 
     void RecalculateTime()
     {
@@ -247,6 +269,7 @@ public class Research : MonoBehaviour {
 
     }
 
+    //Instante Resource increase on game start
 
     void InstantIncrease(int multiples)
     {
@@ -254,6 +277,7 @@ public class Research : MonoBehaviour {
 
     }
 
+    //Upgrades with cost
     public void Upgrade()
     {
         if (unlocked)
@@ -266,6 +290,8 @@ public class Research : MonoBehaviour {
 
     }
 
+
+    //Instant Upgrade on game start
     void InstantUpgrade(int count)
     {
        // level = 2;
@@ -297,10 +323,9 @@ public class Research : MonoBehaviour {
     }
 
     //Activates automatic purchase of resource
-
     public void BuyAuto()
     {
-        if (unlocked)
+        if (unlocked && !managed)
         {
             if (gc.DecreaseCure(managerCost))
             {
@@ -312,6 +337,7 @@ public class Research : MonoBehaviour {
 }
 
 
+    //Closing game
     void OnApplicationQuit()
     {
         float time=0;
@@ -322,6 +348,28 @@ public class Research : MonoBehaviour {
 
     }
 
+    //Purchasing Upgrade from upgrade menu
+    public void PurchaseUpgrade()
+    {
+        if (gc.DecreaseCure(purchased_upgrade_cost))
+        {
+            purchased_upgrades++;
+            currentCure *= 3;
+            purchased_upgrade_cost*= purchased_upgrade_cost;
+            upgrade_button.SetCost(purchased_upgrade_cost);
+            PlayerPrefs.SetInt("Purchased_Upgrades", purchased_upgrades);
+        }
+    }
+
+    void InstantPurchaseUpgrade()
+    {
+        purchased_upgrades++;
+        currentCure *= 3;
+        purchased_upgrade_cost *= purchased_upgrade_cost;
+        upgrade_button.SetCost(purchased_upgrade_cost);
+    }
+
+    //Resetting PlayerPrefs
     public void RefreshPrefs()
     {
         PlayerPrefs.DeleteAll();
