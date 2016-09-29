@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\GameController.cs" />
+     <Compile Include="Assets\Scripts\ManagerMenu.cs" />
      <Compile Include="Assets\Scripts\Research.cs" />
      <Compile Include="Assets\Scripts\UpgradeButton.cs" />
  <Reference Include="UnityEngine.UI">

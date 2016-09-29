@@ -14,7 +14,6 @@ public class GameController : MonoBehaviour {
     int state = 0; /* 0 search, 1 menu, 2 managers, 3 upgrades*/
     public static GameController instance;
 
-
     void Awake()
     {
         if (PlayerPrefs.HasKey("TotalCure"))
@@ -26,7 +25,6 @@ public class GameController : MonoBehaviour {
     }
     // Use this for initialization
     void Start () {
-      
     }
 
     // Update is called once per frame
@@ -155,5 +153,7 @@ public class GameController : MonoBehaviour {
         Application.Quit();
     }
 
+
+  
 }
 
