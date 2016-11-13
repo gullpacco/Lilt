@@ -16,8 +16,8 @@ public class GameController : MonoBehaviour {
 
     void Awake()
     {
-        if (PlayerPrefs.HasKey("TotalCure"))
-            totalCure = PlayerPrefs.GetFloat("TotalCure");
+        //if (PlayerPrefs.HasKey("TotalCure"))
+        //    totalCure = PlayerPrefs.GetFloat("TotalCure");
         Screen.orientation = ScreenOrientation.Portrait;
         instance = this;
 
@@ -25,6 +25,11 @@ public class GameController : MonoBehaviour {
     }
     // Use this for initialization
     void Start () {
+    }
+
+    public void SetCure(float cure)
+    {
+        totalCure = cure;
     }
 
     // Update is called once per frame
@@ -35,7 +40,7 @@ public class GameController : MonoBehaviour {
     public void IncreaseCure(float cure)
     {
         totalCure += cure;
-        totalCureText.text = "Cure Points: " + totalCure.ToString("F2") + "§";
+        totalCureText.text = "Cure Points: " + ConvertScore(totalCure) + "§";
     }
 
 
@@ -44,7 +49,7 @@ public class GameController : MonoBehaviour {
         if (cure <= totalCure)
         {
             totalCure -= cure;
-            totalCureText.text = "Cure Points: " + totalCure.ToString("F2") + "§";
+            totalCureText.text = "Cure Points: " +ConvertScore(totalCure) + "§";
 
             return true;
 
@@ -63,14 +68,14 @@ public class GameController : MonoBehaviour {
 
     void OnApplicationQuit()
     {
-        PlayerPrefs.SetFloat("TotalCure", totalCure);
-
+        // PlayerPrefs.SetFloat("TotalCure", totalCure);
+        DataSavings.instance.Save();
     }
 
     public void Reset()
     {
         totalCure = 0;
-        PlayerPrefs.SetFloat("TotalCure", totalCure);
+      //  PlayerPrefs.SetFloat("TotalCure", totalCure);
 
     }
 
@@ -154,6 +159,45 @@ public class GameController : MonoBehaviour {
     }
 
 
-  
+  public static string ConvertScore(float points)
+    {
+       int place = 0;
+        float score = points;
+        string tempString = points.ToString();
+
+        while (score >= 1000)
+        {
+            score = score / 1000;
+            place++;
+        }
+
+        score = Mathf.Floor(score * 10) / 10;
+        if (place == 0)
+        {
+            tempString = score.ToString();
+        }
+        else if (place == 1)
+        {
+            tempString = score.ToString() + "k";
+        }
+        else if (place == 2)
+        {
+            tempString = score.ToString() + "m";
+        }
+        else if (place == 3)
+        {
+            tempString = score.ToString() + "b";
+        }
+        else if (place == 4)
+        {
+            tempString = score.ToString() + "t";
+        }
+        else if (place == 5)
+        {
+            tempString = score.ToString() + "q";
+        }
+
+        return tempString;
+    }
 }
 

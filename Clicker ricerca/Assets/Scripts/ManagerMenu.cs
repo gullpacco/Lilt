@@ -4,12 +4,18 @@ using System.Collections;
 public class ManagerMenu : MonoBehaviour {
 
     ManagerMenu instance;
-    GameObject[] managers ; 
-    
+    GameObject[] managers;
+
     void Awake()
     {
         instance = this;
+        managers = new GameObject[transform.childCount];
+        for (int p = 0; p < managers.Length; p++)
+        {
+            managers[p] = transform.GetChild(p).gameObject;
+        }
     }
+
 
 	// Use this for initialization
 	void Start () {

@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.Runtime.Serialization.Formatters.Binary;
+using System;
 
 public class Research : MonoBehaviour {
 
@@ -19,7 +21,6 @@ public class Research : MonoBehaviour {
           cureTime,
           upgradeCost,
           cureModifiers=1;
-
     public Text gainText, timeText, levelText, upgradeText;
     public GameObject lockedText;
     public UpgradeButton upgrade_button;
@@ -47,117 +48,20 @@ public class Research : MonoBehaviour {
         upgradeCost = baseUpgradeCost;
 
 
-        if (PlayerPrefs.HasKey("Level" + name))
-        {
-            Debug.Log("dove l'hai preso?");
-            int tmp = PlayerPrefs.GetInt("Level" + name);
-            InstantUpgrade(tmp);
 
-        }
+      
 
-        if(PlayerPrefs.HasKey(name+"unlock") || unlocked)
-            UnLock(); 
+        //if (PlayerPrefs.HasKey("Managed" + name))
+        //    managed = true;
 
-        if (PlayerPrefs.HasKey("Managed" + name))
-            managed = true;
 
-     
 
-        
+
 
     }
     // Use this for initialization
     void Start () {
-        upgradeText.text = upgradeCost.ToString("F2") + "§";
-
-        mM = FindObjectOfType<ManagerMenu>();
-
-        if (managed)
-        {
-            int multiples = 0;
-            float difference = 0;
-            mM.RemoveManager(name);
-            System.DateTime now = System.DateTime.Now;
-            if (PlayerPrefs.HasKey("LastSecond"))
-            {
-                int tmpTime =0;
-                int tmpValue = PlayerPrefs.GetInt("LastYear");
-
-                if (now.Year != tmpValue) 
-                {
-                    tmpTime += 60*60*24*365* (now.Year - tmpValue);
-
-                }
-
-                tmpValue = PlayerPrefs.GetInt("LastDay");
-                if (now.DayOfYear != tmpValue) 
-                {
-                    tmpTime += 60*60*24*(now.DayOfYear - tmpValue);
-
-                }
-
-                tmpValue = PlayerPrefs.GetInt("LastHour");
-
-                if (now.Hour != tmpValue)
-                {
-
-                    tmpTime += 60*60*(now.Hour- tmpValue);
-
-                }
-
-                tmpValue = PlayerPrefs.GetInt("LastMinute");
-
-                if (now.Minute != tmpValue)
-                {
-
-                    tmpTime += 60*(now.Minute - tmpValue);
-
-                }
-
-                tmpValue = PlayerPrefs.GetInt("LastSecond");
-
-                tmpTime += (now.Second - tmpValue);
-
-
-
-
-
-                multiples = (int)(tmpTime / cureTime);
-                InstantIncrease(multiples);
-
-                difference = (tmpTime) - (multiples * cureTime);
-                StartCoroutine(Increase(difference));
-                timeLeft = difference;
-            }
-            else timeLeft = 0;
-
-        }
-        else timeLeft = 0;
-
-        if (PlayerPrefs.HasKey("Purchased_Upgrades"))
-        {
-            for(int i=0; i<PlayerPrefs.GetInt("Purchased_Upgrades"); i++)
-            {
-                InstantPurchaseUpgrade();
-            }
-        }
-      
-        gainText.text = "Gain: " + CalculateCure().ToString("F2");
-       
-
-        if (!unlocked)
-        {
-            img.color = new Color(0.1f, 0.1f, 0.1f);
-        }
-        else img.color = new Color(.1f, .8f, .1f);
-
-        InvokeRepeating("RecalculateTime", 0, 1);
-        if (timeLeft == 0)
-            timeLeft = cureTime;
-        upgrade_button.SetName(base.name + " Research x 3");
-        upgrade_button.SetCost(purchased_upgrade_cost);
-
-
+        //  DataRecovery();
     }
 
     // Update is called once per frame
@@ -291,9 +195,9 @@ public class Research : MonoBehaviour {
         lockedText.SetActive(false);
         img.color = new Color(.1f, .8f, .1f);
         levelText.text = "" + level;
-        PlayerPrefs.SetInt("Level" + name, level);
+    //    PlayerPrefs.SetInt("Level" + name, level);
 
-        PlayerPrefs.SetInt(name + "unlock", 1);
+    //    PlayerPrefs.SetInt(name + "unlock", 1);
 
     }
 
@@ -361,12 +265,13 @@ public class Research : MonoBehaviour {
     {
         currentCure+=baseCure;
         upgradeCost *= upgradeCostModifier;
-        gainText.text = "Gain: " + CalculateCure().ToString("F2");
+        gainText.text = "Gain: " + GameController.ConvertScore(CalculateCure());
         level++;
-        PlayerPrefs.SetInt("Level" + name, level);
+        
+     //   PlayerPrefs.SetInt("Level" + name, level);
 
         levelText.text = "" + level;
-        upgradeText.text = upgradeCost.ToString("F2") + "§";
+        upgradeText.text = GameController.ConvertScore(upgradeCost) + "§";
 
 
         if (level >= bonusLimit)
@@ -392,7 +297,7 @@ public class Research : MonoBehaviour {
                 managed = true;
                 mM.RemoveManager(name);
 
-                PlayerPrefs.SetInt("Managed" + name, 1);
+           //     PlayerPrefs.SetInt("Managed" + name, 1);
 
             }
         }
@@ -412,6 +317,7 @@ public class Research : MonoBehaviour {
         PlayerPrefs.SetInt("LastYear", now.Year);
 
         if (reset) {
+            DataSavings.instance.Erase();
             Time.timeScale = 0;
             RefreshPrefs(); }
 
@@ -424,9 +330,9 @@ public class Research : MonoBehaviour {
         {
             purchased_upgrades++;
             cureModifiers *= 3;
-            purchased_upgrade_cost*= purchased_upgrade_cost;
+            purchased_upgrade_cost*= 2;
             upgrade_button.SetCost(purchased_upgrade_cost);
-            PlayerPrefs.SetInt("Purchased_Upgrades", purchased_upgrades);
+      //      PlayerPrefs.SetInt("Purchased_Upgrades", purchased_upgrades);
         }
     }
 
@@ -434,7 +340,7 @@ public class Research : MonoBehaviour {
     {
         purchased_upgrades++;
         cureModifiers *= 3;
-        purchased_upgrade_cost *= purchased_upgrade_cost;
+        purchased_upgrade_cost *= 2;
         upgrade_button.SetCost(purchased_upgrade_cost);
     }
 
@@ -446,5 +352,146 @@ public class Research : MonoBehaviour {
         gc.Reset();
     }
 
+    public ResearchData Serialize()
+    {
+        return new ResearchData(level, purchased_upgrades, managed, unlocked, name) ;
+    }
+
+    public void Deserialize(ResearchData rd)
+    {
+        level = rd.level;
+        purchased_upgrades = rd.upgrades;
+        managed = rd.managed;
+        unlocked = rd.unlocked;
+        DataRecovery();
+    }
+
+    public void DataRecovery()
+    {
+        int tmpLv = level;
+        level = 1;
+        InstantUpgrade(tmpLv);
+
+        if (unlocked)
+            UnLock();
+
+        upgradeText.text = GameController.ConvertScore(upgradeCost) + "§";
+
+        mM = FindObjectOfType<ManagerMenu>();
+
+        if (managed)
+        {
+            int multiples = 0;
+            float difference = 0;
+            mM.RemoveManager(name);
+            System.DateTime now = System.DateTime.Now;
+            if (PlayerPrefs.HasKey("LastSecond"))
+            {
+                int tmpTime = 0;
+                int tmpValue = PlayerPrefs.GetInt("LastYear");
+
+                if (now.Year != tmpValue)
+                {
+                    tmpTime += 60 * 60 * 24 * 365 * (now.Year - tmpValue);
+
+                }
+
+                tmpValue = PlayerPrefs.GetInt("LastDay");
+                if (now.DayOfYear != tmpValue)
+                {
+                    tmpTime += 60 * 60 * 24 * (now.DayOfYear - tmpValue);
+
+                }
+
+                tmpValue = PlayerPrefs.GetInt("LastHour");
+
+                if (now.Hour != tmpValue)
+                {
+
+                    tmpTime += 60 * 60 * (now.Hour - tmpValue);
+
+                }
+
+                tmpValue = PlayerPrefs.GetInt("LastMinute");
+
+                if (now.Minute != tmpValue)
+                {
+
+                    tmpTime += 60 * (now.Minute - tmpValue);
+
+                }
+
+                tmpValue = PlayerPrefs.GetInt("LastSecond");
+
+                tmpTime += (now.Second - tmpValue);
+
+
+
+
+
+                multiples = (int)(tmpTime / cureTime);
+                InstantIncrease(multiples);
+
+                difference = (tmpTime) - (multiples * cureTime);
+                StartCoroutine(Increase(difference));
+                timeLeft = difference;
+            }
+            else timeLeft = 0;
+
+        }
+        else timeLeft = 0;
+
+        //if (PlayerPrefs.HasKey("Purchased_Upgrades"))
+        //{
+        //    for(int i=0; i<PlayerPrefs.GetInt("Purchased_Upgrades"); i++)
+        //    {
+        //        InstantPurchaseUpgrade();
+        //    }
+        //}
+
+        int upgradesCounter = purchased_upgrades;
+        purchased_upgrades = 0;
+        for (int i = 0; i < upgradesCounter; i++)
+        {
+            InstantPurchaseUpgrade();
+        }
+
+        gainText.text = "Gain: " + GameController.ConvertScore(CalculateCure());
+
+
+        if (!unlocked)
+        {
+            img.color = new Color(0.1f, 0.1f, 0.1f);
+        }
+        else img.color = new Color(.1f, .8f, .1f);
+
+        InvokeRepeating("RecalculateTime", 0, 1);
+        if (timeLeft == 0)
+            timeLeft = cureTime;
+      //  upgrade_button.SetName(base.name + " Research x 3");
+       // upgrade_button.SetCost(purchased_upgrade_cost);
+
+    }
+}
+
+[Serializable]
+public class ResearchData
+{
+    public int level;
+    public int upgrades;
+    public  bool managed;
+    public bool unlocked;
+    public string name;
+
+    public ResearchData(int level, int upgrades, bool managed, bool unlocked, string name)
+    {
+        this.level = level;
+        this.upgrades = upgrades;
+        this.managed = managed;
+        this.unlocked = unlocked;
+        this.name = name;
+    }
+
+    
 
 }
