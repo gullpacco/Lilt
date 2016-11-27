@@ -34,13 +34,13 @@ public class ManagerMenu : MonoBehaviour {
 
     public void RemoveManager(string name)
     {
-
+        Debug.Log(name);
         int toRemove = -1;
         if (managers.Length > 1) {
 
             for(int k=0; k<managers.Length; k++)
             {
-                Debug.Log(managers[k].name);
+
                 if (managers[k].name.Contains(name))
                 {
                     toRemove = k;
@@ -60,12 +60,15 @@ public class ManagerMenu : MonoBehaviour {
             {
                 tmpArray[j] = managers[j];
             }
-            Destroy(managers[toRemove]);
+            //Destroy(managers[toRemove]);
+            managers[toRemove].SetActive(false);
             managers = tmpArray;
         }
         else
         {
-            Destroy(managers[0]);
+            //Destroy(managers[0]);
+            managers[toRemove].SetActive(false);
+
             managers = null;
         }
     }

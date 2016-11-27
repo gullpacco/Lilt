@@ -17,6 +17,7 @@ public class UpgradeButton : MonoBehaviour {
     void Start () {
         name_text = transform.GetChild(0).GetComponent<Text>();
         cost_text = transform.GetChild(1).GetComponent<Text>();
+        img = GetComponent<Image>();
     }
 	
 	// Update is called once per frame
@@ -31,7 +32,14 @@ public class UpgradeButton : MonoBehaviour {
 
     public void SetCost(int cost)
     {
-        cost_text.text = "Cost: " + cost + "§";
+        StartCoroutine(Delay(cost));
+    }
+
+    IEnumerator Delay(int cost)
+    {
+        yield return new WaitForEndOfFrame();
+        cost_text.text = "Costo: "+ cost;
+
     }
 
     public void ChangeColour(Color col)

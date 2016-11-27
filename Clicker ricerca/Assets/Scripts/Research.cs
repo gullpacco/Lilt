@@ -62,6 +62,9 @@ public class Research : MonoBehaviour {
     // Use this for initialization
     void Start () {
         //  DataRecovery();
+        Debug.Log(purchased_upgrade_cost);
+        upgrade_button.SetCost(purchased_upgrade_cost);
+
     }
 
     // Update is called once per frame
@@ -76,14 +79,29 @@ public class Research : MonoBehaviour {
         {
             if (gc.GetCure() > unlockCost)
             {
-                img.color = new Color(0.1f, 0.1f, 0.5f);
+                img.color = new Color(0.1f, 0.6f, 0.3f);
 
             }
             else img.color = new Color(0.1f, 0.1f, 0.1f);
 
         }
+
+        if (!unlocked)
+        {
+            gainText.color = new Color(1, 1, 1, 0);
+            timeText.color = new Color(1, 1, 1, 0);
+
+        }
+        else
+        {
+            gainText.color = new Color(1, 1, 1, 1);
+            timeText.color = new Color(1, 1, 1, 1);
+        }
+
         // RecalculateTime();
         CheckUpgrades();
+        gainText.text = "Guadagno: " + GameController.ConvertScore(CalculateCure());
+
     }
 
 
@@ -91,15 +109,16 @@ public class Research : MonoBehaviour {
     {
         if (gc.GetCure() > purchased_upgrade_cost)
         {
-            upgrade_button.ChangeColour(new Color(0.3f, 0.3f, 0.6f));
+              upgrade_button.ChangeColour(new Color(1f, 1f, 1f));
         }
-        else upgrade_button.ChangeColour(new Color(0.3f, 0.3f, 0.3f));
+        else { upgrade_button.ChangeColour(new Color(0f, 0f, 0f));
+        }
     }
 
     void RecalculateTime()
     {
       
-        string timeLeftText = "Time: " ;
+        string timeLeftText = "Tempo: " ;
         //float whatIsLeft;
         int difference;
         bool showSeconds =true;
@@ -170,7 +189,7 @@ public class Research : MonoBehaviour {
             {
                 StartCoroutine(Increase(cureTime));
                 loading = true;
-                img.color = new Color(0.8f, 0.1f, 0.1f);
+                img.color = new Color(1f, 0.3f, 0f);
 
             }
         }
@@ -193,7 +212,7 @@ public class Research : MonoBehaviour {
 
         unlocked = true;
         lockedText.SetActive(false);
-        img.color = new Color(.1f, .8f, .1f);
+        img.color = new Color(1f, 1f, 1f);
         levelText.text = "" + level;
     //    PlayerPrefs.SetInt("Level" + name, level);
 
@@ -206,7 +225,8 @@ public class Research : MonoBehaviour {
         yield return new WaitForSeconds(timer);
         gc.IncreaseCure(CalculateCure());
         loading = false;
-        img.color = new Color(.1f, .8f, .1f);
+        if(!managed)
+        img.color = new Color(1f, 1f, 1f);
         timeLeft = cureTime;
         RecalculateTime();
 
@@ -265,7 +285,7 @@ public class Research : MonoBehaviour {
     {
         currentCure+=baseCure;
         upgradeCost *= upgradeCostModifier;
-        gainText.text = "Gain: " + GameController.ConvertScore(CalculateCure());
+        gainText.text = "Guadagno: " + GameController.ConvertScore(CalculateCure());
         level++;
         
      //   PlayerPrefs.SetInt("Level" + name, level);
@@ -290,10 +310,14 @@ public class Research : MonoBehaviour {
     //Activates automatic purchase of resource
     public void BuyAuto()
     {
+        Debug.Log("Buy");
         if (unlocked && !managed)
         {
+            Debug.Log(managerCost + " " + gc.GetCure() + name);
             if (gc.DecreaseCure(managerCost))
             {
+                Debug.Log("Cost");
+
                 managed = true;
                 mM.RemoveManager(name);
 
@@ -375,7 +399,7 @@ public class Research : MonoBehaviour {
         if (unlocked)
             UnLock();
 
-        upgradeText.text = GameController.ConvertScore(upgradeCost) + "§";
+        upgradeText.text = GameController.ConvertScore(upgradeCost);
 
         mM = FindObjectOfType<ManagerMenu>();
 
@@ -456,14 +480,20 @@ public class Research : MonoBehaviour {
             InstantPurchaseUpgrade();
         }
 
-        gainText.text = "Gain: " + GameController.ConvertScore(CalculateCure());
+        gainText.text = "Guadagno: " + GameController.ConvertScore(CalculateCure());
 
 
         if (!unlocked)
         {
             img.color = new Color(0.1f, 0.1f, 0.1f);
+            gainText.color = new Color(1, 1, 1, 0);
+            timeText.color = new Color(1, 1, 1, 0);
+
         }
-        else img.color = new Color(.1f, .8f, .1f);
+        else { img.color = new Color(1f, 1f, 1f);
+            gainText.color = new Color(1, 1, 1, 1);
+            timeText.color = new Color(1, 1, 1, 1);
+        }
 
         InvokeRepeating("RecalculateTime", 0, 1);
         if (timeLeft == 0)

@@ -34,13 +34,14 @@ public class GameController : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-	
-	}
+        totalCureText.text = ConvertScore(totalCure);
+
+    }
 
     public void IncreaseCure(float cure)
     {
         totalCure += cure;
-        totalCureText.text = "Cure Points: " + ConvertScore(totalCure) + "§";
+        totalCureText.text =  ConvertScore(totalCure);
     }
 
 
@@ -49,7 +50,7 @@ public class GameController : MonoBehaviour {
         if (cure <= totalCure)
         {
             totalCure -= cure;
-            totalCureText.text = "Cure Points: " +ConvertScore(totalCure) + "§";
+            totalCureText.text = ConvertScore(totalCure);
 
             return true;
 
@@ -109,7 +110,7 @@ public class GameController : MonoBehaviour {
 
     void Open()
     {
-        research.transform.position = new Vector3(research.transform.position.x - 11.65f, research.transform.position.y, research.transform.position.z);
+        research.transform.position = new Vector3(research.transform.position.x - 13.65f, research.transform.position.y, research.transform.position.z);
         menu.transform.position = new Vector3(menu.transform.position.x +9.65f, menu.transform.position.y, menu.transform.position.z);
         state = 1;
         
@@ -117,7 +118,7 @@ public class GameController : MonoBehaviour {
 
     void Close()
     {
-        research.transform.position = new Vector3(research.transform.position.x + 11.65f, research.transform.position.y, research.transform.position.z);
+        research.transform.position = new Vector3(research.transform.position.x + 13.65f, research.transform.position.y, research.transform.position.z);
 
         menu.transform.position = new Vector3(menu.transform.position.x - 9.65f, menu.transform.position.y, menu.transform.position.z);
         state = 0;
@@ -178,23 +179,23 @@ public class GameController : MonoBehaviour {
         }
         else if (place == 1)
         {
-            tempString = score.ToString() + "k";
+            tempString = score.ToString() + "K";
         }
         else if (place == 2)
         {
-            tempString = score.ToString() + "m";
+            tempString = score.ToString() + "M";
         }
         else if (place == 3)
         {
-            tempString = score.ToString() + "b";
+            tempString = score.ToString() + "B";
         }
         else if (place == 4)
         {
-            tempString = score.ToString() + "t";
+            tempString = score.ToString() + "T";
         }
         else if (place == 5)
         {
-            tempString = score.ToString() + "q";
+            tempString = score.ToString() + "Q";
         }
 
         return tempString;
