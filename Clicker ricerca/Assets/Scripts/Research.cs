@@ -118,7 +118,10 @@ public class Research : MonoBehaviour {
     void RecalculateTime()
     {
       
+
         string timeLeftText = "Tempo: " ;
+        if (managed)
+            timeLeftText = timeLeftText;
         //float whatIsLeft;
         int difference;
         bool showSeconds =true;
@@ -173,12 +176,14 @@ public class Research : MonoBehaviour {
         }
         if (timeLeft <= 0)
         {
-            timeLeftText += "0s";
+            timeLeftText += "0s ";
            // timeLeft = cureTime;
             
 
         }
         timeText.text = timeLeftText;
+        if (managed)
+            timeText.text = timeLeftText + " (Manager)";
     }
 
    public void Cure()
@@ -213,7 +218,7 @@ public class Research : MonoBehaviour {
         unlocked = true;
         lockedText.SetActive(false);
         img.color = new Color(1f, 1f, 1f);
-        levelText.text = "" + level;
+        levelText.text = "LV " + GameController.ConvertScore(level);
     //    PlayerPrefs.SetInt("Level" + name, level);
 
     //    PlayerPrefs.SetInt(name + "unlock", 1);
@@ -290,8 +295,8 @@ public class Research : MonoBehaviour {
         
      //   PlayerPrefs.SetInt("Level" + name, level);
 
-        levelText.text = "" + level;
-        upgradeText.text = GameController.ConvertScore(upgradeCost) + "§";
+        levelText.text = "LV " + GameController.ConvertScore(level);
+        upgradeText.text = GameController.ConvertScore(upgradeCost) +"\nDin" ;
 
 
         if (level >= bonusLimit)
@@ -399,7 +404,7 @@ public class Research : MonoBehaviour {
         if (unlocked)
             UnLock();
 
-        upgradeText.text = GameController.ConvertScore(upgradeCost);
+        upgradeText.text = GameController.ConvertScore(upgradeCost)+"\nDin";
 
         mM = FindObjectOfType<ManagerMenu>();
 

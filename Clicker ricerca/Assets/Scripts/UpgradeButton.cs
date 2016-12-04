@@ -38,7 +38,7 @@ public class UpgradeButton : MonoBehaviour {
     IEnumerator Delay(int cost)
     {
         yield return new WaitForEndOfFrame();
-        cost_text.text = "Costo: "+ cost;
+        cost_text.text = "Costo: "+ GameController.ConvertScore(cost) + " Din";
 
     }
 
