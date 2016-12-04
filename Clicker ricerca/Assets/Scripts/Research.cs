@@ -11,7 +11,7 @@ public class Research : MonoBehaviour {
                     baseCureTime,
                     managerCost,
     purchased_upgrade_cost;
-
+    bool recovered;
     public float
                     upgradeCostModifier;
                    
@@ -61,13 +61,18 @@ public class Research : MonoBehaviour {
     void Start () {
         //  DataRecovery();
         upgrade_button.SetCost(purchased_upgrade_cost);
+        //{ CancelInvoke("RecalculateTime");
+        //    InvokeRepeating("RecalculateTime", 0, 1);
+        //}
+
 
     }
 
     // Update is called once per frame
     void Update () {
-
-        if (managed)
+        if (!recovered)
+            DataRecovery();
+            if (managed)
         {
             Cure();
         }
@@ -117,8 +122,6 @@ public class Research : MonoBehaviour {
       
 
         string timeLeftText = "Tempo: " ;
-        if (managed)
-            timeLeftText = timeLeftText;
         //float whatIsLeft;
         int difference;
         bool showSeconds =true;
@@ -505,6 +508,7 @@ public class Research : MonoBehaviour {
         }
 
         InvokeRepeating("RecalculateTime", 0, 1);
+        recovered = true;
         if (timeLeft == 0)
             timeLeft = cureTime;
       //  upgrade_button.SetName(base.name + " Research x 3");
