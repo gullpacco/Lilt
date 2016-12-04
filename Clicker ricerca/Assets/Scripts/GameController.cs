@@ -40,6 +40,13 @@ public class GameController : MonoBehaviour {
             can.referenceResolution = new Vector2(1020, 1920);
 
         }
+        else
+        {
+            can = FindObjectOfType<CanvasScaler>();
+
+            can.referenceResolution = new Vector2(1040, 1920);
+
+        }
     }
     // Use this for initialization
     void Start () {
