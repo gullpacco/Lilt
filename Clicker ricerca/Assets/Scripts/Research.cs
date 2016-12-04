@@ -42,7 +42,7 @@ public class Research : MonoBehaviour {
 
         gc = FindObjectOfType<GameController>();
         img = GetComponent<Image>();
-        unlockCost = baseCure / 2;
+        unlockCost = baseCure;
         currentCure = baseCure;
         cureTime = baseCureTime;
         upgradeCost = baseUpgradeCost;
