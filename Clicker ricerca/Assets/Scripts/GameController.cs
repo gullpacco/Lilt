@@ -34,14 +34,15 @@ public class GameController : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        totalCureText.text = ConvertScore(totalCure) + " Din" ;
+
+        totalCureText.text = ConvertScore(totalCure) + " Fondi" ;
 
     }
 
     public void IncreaseCure(float cure)
     {
         totalCure += cure;
-        totalCureText.text =  ConvertScore(totalCure);
+        totalCureText.text =  ConvertScore(totalCure) + " Fondi";
     }
 
 
@@ -50,7 +51,7 @@ public class GameController : MonoBehaviour {
         if (cure <= totalCure)
         {
             totalCure -= cure;
-            totalCureText.text = ConvertScore(totalCure);
+            totalCureText.text = ConvertScore(totalCure) + " Fondi";
 
             return true;
 

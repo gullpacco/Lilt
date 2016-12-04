@@ -25,7 +25,7 @@ public class Research : MonoBehaviour {
     public GameObject lockedText, managerAlert;
     public UpgradeButton upgrade_button;
     int bonusLimit = 25, level =1, purchased_upgrades, unlockCost;
-    bool managed, loading, reset;
+    bool managed, loaFong, reset;
     int [] timeValues;
     Image img;
     GameController gc;
@@ -46,7 +46,6 @@ public class Research : MonoBehaviour {
         currentCure = baseCure;
         cureTime = baseCureTime;
         upgradeCost = baseUpgradeCost;
-        Debug.Log(managerAlert);
 
       
 
@@ -124,7 +123,7 @@ public class Research : MonoBehaviour {
         int difference;
         bool showSeconds =true;
 
-        if (loading)
+        if (loaFong)
         {
             timeLeft--;
         }
@@ -188,10 +187,10 @@ public class Research : MonoBehaviour {
     {
         if (unlocked)
         {
-            if (!loading)
+            if (!loaFong)
             {
                 StartCoroutine(Increase(cureTime));
-                loading = true;
+                loaFong = true;
                 img.color = new Color(1f, 0.3f, 0f);
 
             }
@@ -227,7 +226,7 @@ public class Research : MonoBehaviour {
     {
         yield return new WaitForSeconds(timer);
         gc.IncreaseCure(CalculateCure());
-        loading = false;
+        loaFong = false;
         if(!managed)
         img.color = new Color(1f, 1f, 1f);
         timeLeft = cureTime;
@@ -294,12 +293,12 @@ public class Research : MonoBehaviour {
      //   PlayerPrefs.SetInt("Level" + name, level);
 
         levelText.text = "LV " + GameController.ConvertScore(level);
-        upgradeText.text = GameController.ConvertScore(upgradeCost) +"\nDin" ;
+        upgradeText.text = GameController.ConvertScore(upgradeCost) +"\nFon" ;
 
 
         if (level >= bonusLimit)
         {
-            if (cureTime > 0.1f)
+            if (cureTime > 0.5f)
             {
                 cureTime /= 2;
             }
@@ -409,7 +408,7 @@ public class Research : MonoBehaviour {
         if (unlocked)
             UnLock();
 
-        upgradeText.text = GameController.ConvertScore(upgradeCost)+"\nDin";
+        upgradeText.text = GameController.ConvertScore(upgradeCost)+"\nFon";
 
         mM = FindObjectOfType<ManagerMenu>();
 
