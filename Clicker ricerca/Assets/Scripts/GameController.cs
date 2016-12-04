@@ -17,7 +17,7 @@ public class GameController : MonoBehaviour {
     void Awake()
     {
         //if (PlayerPrefs.HasKey("TotalCure"))
-        //    totalCure = PlayerPrefs.GetFloat("TotalCure");
+        //    totalCure = PlayerPrefs.GetFloat("TotalCure"); 
         Screen.orientation = ScreenOrientation.Portrait;
         instance = this;
         CanvasScaler can;
