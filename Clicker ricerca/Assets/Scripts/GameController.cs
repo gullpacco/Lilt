@@ -20,8 +20,26 @@ public class GameController : MonoBehaviour {
         //    totalCure = PlayerPrefs.GetFloat("TotalCure");
         Screen.orientation = ScreenOrientation.Portrait;
         instance = this;
+        CanvasScaler can;
+        if (Screen.width <= 650 && Screen.height<=1000)
+        {
+            can = FindObjectOfType<CanvasScaler>();
+            can.referenceResolution = new Vector2(1150, 1920);
+        }
+        else if (Screen.width == 640 && Screen.height <= 1136)
+        {
+            can = FindObjectOfType<CanvasScaler>();
 
+            can.referenceResolution = new Vector2(1060, 1920);
 
+        }
+        else if (Screen.width ==750 && Screen.height <= 1334)
+        {
+            can = FindObjectOfType<CanvasScaler>();
+
+            can.referenceResolution = new Vector2(1020, 1920);
+
+        }
     }
     // Use this for initialization
     void Start () {
