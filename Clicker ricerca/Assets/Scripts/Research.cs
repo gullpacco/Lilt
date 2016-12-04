@@ -22,7 +22,7 @@ public class Research : MonoBehaviour {
           upgradeCost,
           cureModifiers=1;
     public Text gainText, timeText, levelText, upgradeText;
-    public GameObject lockedText;
+    public GameObject lockedText, managerAlert;
     public UpgradeButton upgrade_button;
     int bonusLimit = 25, level =1, purchased_upgrades, unlockCost;
     bool managed, loading, reset;
@@ -46,8 +46,7 @@ public class Research : MonoBehaviour {
         currentCure = baseCure;
         cureTime = baseCureTime;
         upgradeCost = baseUpgradeCost;
-
-
+        Debug.Log(managerAlert);
 
       
 
@@ -62,7 +61,6 @@ public class Research : MonoBehaviour {
     // Use this for initialization
     void Start () {
         //  DataRecovery();
-        Debug.Log(purchased_upgrade_cost);
         upgrade_button.SetCost(purchased_upgrade_cost);
 
     }
@@ -315,22 +313,29 @@ public class Research : MonoBehaviour {
     //Activates automatic purchase of resource
     public void BuyAuto()
     {
-        Debug.Log("Buy");
         if (unlocked && !managed)
         {
-            Debug.Log(managerCost + " " + gc.GetCure() + name);
             if (gc.DecreaseCure(managerCost))
             {
-                Debug.Log("Cost");
-
                 managed = true;
+              
                 mM.RemoveManager(name);
+                managerAlert.SetActive(true);
 
-           //     PlayerPrefs.SetInt("Managed" + name, 1);
+                Invoke("CloseAlert", 3);
+                GameController.instance.OpenMenu();
+                GameController.instance.OpenMenu();
+
+                //     PlayerPrefs.SetInt("Managed" + name, 1);
 
             }
         }
 }
+
+    void CloseAlert()
+    {
+        managerAlert.SetActive(false);
+    }
 
 
     //Closing game
@@ -359,7 +364,7 @@ public class Research : MonoBehaviour {
         {
             purchased_upgrades++;
             cureModifiers *= 3;
-            purchased_upgrade_cost*= 2;
+            purchased_upgrade_cost*= 10;
             upgrade_button.SetCost(purchased_upgrade_cost);
       //      PlayerPrefs.SetInt("Purchased_Upgrades", purchased_upgrades);
         }
@@ -369,7 +374,7 @@ public class Research : MonoBehaviour {
     {
         purchased_upgrades++;
         cureModifiers *= 3;
-        purchased_upgrade_cost *= 2;
+        purchased_upgrade_cost *= 10;
         upgrade_button.SetCost(purchased_upgrade_cost);
     }
 
